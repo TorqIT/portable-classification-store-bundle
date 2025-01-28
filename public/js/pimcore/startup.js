@@ -1,14 +1,63 @@
 pimcore.registerNS("pimcore.plugin.TorqITPortableClassificationStoreBundle");
 
-pimcore.plugin.TorqITPortableClassificationStoreBundle = Class.create({
+Ext.define("pimcore.plugin.TorqITPortableClassificationStoreBundle", {
+  override: "pimcore.object.classificationstore.storeTree",
+  parentGetTabPanel:
+    pimcore.object.classificationstore.storeTree.prototype.getTabPanel,
+  initialize: function () {
+    const tabPanel = this.parentGetTabPanel.apply(this);
 
-    initialize: function () {
-        document.addEventListener(pimcore.events.pimcoreReady, this.pimcoreReady.bind(this));
-    },
+    tabPanel.addDocked(
+      [
+        { xtype: "tbfill" },
+        this.getImportButton(),
+        { xtype: "tbfill" },
+        this.getExportButton(),
+      ],
+      1
+    );
+    tabPanel.tabPanel.updateLayout();
 
-    pimcoreReady: function (e) {
-        // alert("TorqITPortableClassificationStoreBundle ready!");
-    }
+    pimcore.layout.refresh();
+  },
+
+  getImportButton: function () {
+    return new Ext.Button({
+      tooltip: t("import"),
+      iconCls: "pimcore_icon_upload",
+      handler: function () {
+        pimcore.helpers.uploadDialog(
+          this.importRoute,
+          "Filedata",
+          function (response) {
+            response = response.response;
+            const data = Ext.decode(response.responseText);
+
+            if (data) {
+              const editPanel = new pimcore.plugin.datahub.adapter[data.type](
+                this
+              );
+              editPanel.openConfiguration(data.name);
+            }
+            this.refreshTree();
+          }.bind(this),
+          function (response) {
+            response = response.response;
+            const data = Ext.decode(response.responseText);
+            Ext.MessageBox.alert(t("error"), data.message);
+          }
+        );
+      }.bind(this),
+    });
+  },
+
+  getExportButton: function () {
+    return {
+      text: t("export"),
+      handler: this.onExport.bind(this),
+      iconCls: "pimcore_icon_add",
+    };
+  },
+
+  onExport: function () {},
 });
-
-var TorqITPortableClassificationStoreBundlePlugin = new pimcore.plugin.TorqITPortableClassificationStoreBundle();
