@@ -17,6 +17,9 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
+    TorqIT\TorqITPortableClassificationStoreBundle\Services\:
+        resource: "../src/Services/*"
+        public: true
 # add more services, or override services that need manual wiring
 #    TorqIT\PortableClassificationStoreBundle\ExampleClass:
 #        arguments:
