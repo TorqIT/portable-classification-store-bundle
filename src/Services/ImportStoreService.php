@@ -10,7 +10,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 
 class ImportStoreService
 {
-    public function importStoreData(array $storeData, string $storeId, ?ProgressBar $progress = null)
+    public function importStoreData(array $storeData, int $storeId, ?ProgressBar $progress = null)
     {
         if (!$store = StoreConfig::getById($storeId)) {
             throw new \Exception("Classification store id: $storeId not found.");
@@ -35,6 +35,7 @@ class ImportStoreService
         $keyConfig->setDescription(key_exists('description', $payload) ? $payload['description'] : '');
         $keyConfig->setType($payload['type']);
         $keyConfig->setDefinition($payload['definition']);
+        $keyConfig->setEnabled(true);
 
         $keyConfig->save();
 

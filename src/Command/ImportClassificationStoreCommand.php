@@ -54,7 +54,13 @@ class ImportClassificationStoreCommand extends AbstractCommand
             $progress = new ProgressBar($output, count($data));
         }
 
-        $this->importStoreService->importStoreData($data, $name, $progress);
+        if (!$store = StoreConfig::getByName($name)) {
+            $store = StoreConfig::create();
+            $store->setName($name);
+            $store->save();
+        }
+
+        $this->importStoreService->importStoreData($data, $store->getId(), $progress);
 
         if ($output->getVerbosity() === OutputInterface::VERBOSITY_NORMAL) {
             $output->writeln('');
