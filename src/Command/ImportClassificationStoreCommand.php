@@ -13,11 +13,17 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use TorqIT\TorqITPortableClassificationStoreBundle\Services\ImportStoreService;
 use TorqIT\TorqITPortableClassificationStoreBundle\TorqITPortableClassificationStoreBundle;
 
 class ImportClassificationStoreCommand extends AbstractCommand
 {
     private const STORE_NAME = 'store_name';
+
+    public function __construct(private ImportStoreService $importStoreService)
+    {
+        parent::__construct();
+    }
 
     public function configure()
     {
@@ -33,13 +39,6 @@ class ImportClassificationStoreCommand extends AbstractCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument(self::STORE_NAME);
-        $store = StoreConfig::getByName($name);
-
-        if (!$store) {
-            $store = new StoreConfig();
-            $store->setName($name);
-            $store->save();
-        }
 
         $fileName = str_replace(" ", "_", $input->getArgument(self::STORE_NAME)) . ".json";
         $fileName = TorqITPortableClassificationStoreBundle::getConfigPath() . "/$fileName";
@@ -55,53 +54,12 @@ class ImportClassificationStoreCommand extends AbstractCommand
             $progress = new ProgressBar($output, count($data));
         }
 
-        foreach ($data as $key => $keyDefinition) {
-            $this->upsertKeyAndGroups($store->getId(), $key, $keyDefinition);
-            $progress?->advance();
-        }
+        $this->importStoreService->importStoreData($data, $name, $progress);
 
         if ($output->getVerbosity() === OutputInterface::VERBOSITY_NORMAL) {
             $output->writeln('');
         }
 
         return self::SUCCESS;
-    }
-
-    private function upsertKeyAndGroups(int $storeId, string $keyName, $payload)
-    {
-        if (!$keyConfig = KeyConfig::getByName($keyName, $storeId)) {
-            $keyConfig = new KeyConfig();
-            $keyConfig->setName($keyName);
-            $keyConfig->setEnabled(true);
-            $keyConfig->setStoreId($storeId);
-
-            $this->output->writeln("Creating new key: $keyName", OutputInterface::VERBOSITY_VERBOSE);
-        } else {
-            $this->output->writeln("Updating key: $keyName", OutputInterface::VERBOSITY_VERBOSE);
-        }
-
-        $keyConfig->setTitle(key_exists('title', $payload) ? $payload['title'] : $keyName);
-        $keyConfig->setDescription(key_exists('description', $payload) ? $payload['description'] : '');
-        $keyConfig->setType($payload['type']);
-        $keyConfig->setDefinition($payload['definition']);
-
-        $keyConfig->save();
-
-        foreach ($payload['groups'] as $keyGroup) {
-            if (!$groupObj = GroupConfig::getByName($keyGroup, $storeId)) {
-                $groupObj = new GroupConfig();
-                $groupObj->setName($keyGroup);
-                $groupObj->setStoreId($storeId);
-
-                $groupObj->save();
-            }
-
-            $rel = new KeyGroupRelation();
-            $rel->setKeyId($keyConfig->getId());
-            $rel->setGroupId($groupObj->getId());
-            $rel->setSorter(0);
-
-            $rel->save();
-        }
     }
 }
