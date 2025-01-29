@@ -1,13 +1,31 @@
 pimcore.registerNS("pimcore.plugin.TorqITPortableClassificationStoreBundle");
 
+function exportClassificationStore (exportForm) {
+  console.log(123);
+  if (!exportForm.isValid()) {
+    return;
+  }
+}
+
+function getJsonStoreForClassificationStores() {
+  return new Ext.data.JsonStore({
+    autoLoad: true,
+    forceSelection: true,
+    autoDestroy: true,
+    proxy: {
+      type: "ajax",
+      url: "/admin/classificationstore/storetree",
+      extraParams: { classId: this.classId },
+    },
+    fields: ["id", "text"],
+  });
+}
+
 Ext.define("pimcore.plugin.TorqITPortableClassificationStoreBundle", {
   override: "pimcore.object.classificationstore.storeTree",
-  parentGetTabPanel:
-    pimcore.object.classificationstore.storeTree.prototype.getTabPanel,
-  parentGetStore:
-    pimcore.object.classificationstore.storeTree.prototype.getStoreTree,
+  parentGetTabPanel: pimcore.object.classificationstore.storeTree.prototype.getTabPanel,
+  parentGetStore: pimcore.object.classificationstore.storeTree.prototype.getStoreTree,
   importRoute: Routing.generate('pimcore_bundle_portalclassificationstore_upload'),
-  exportRoute: Routing.generate('pimcore_bundle_portalclassificationstore_export'),
   initialize: function () {
     const tabPanel = this.parentGetTabPanel();
     console.log("asdf");
@@ -60,10 +78,59 @@ Ext.define("pimcore.plugin.TorqITPortableClassificationStoreBundle", {
   getExportButton: function () {
     return {
       text: t("export"),
-      handler: this.onExport.bind(this),
+      handler: function() {
+      const exportForm = Ext.create('Ext.form.FormPanel', {
+          bodyStyle: "padding:10px;",
+          items: [
+            {
+              xtype: "combo",
+              fieldLabel: "Classification Store",
+              name: "classificationStore",
+              store: getJsonStoreForClassificationStores(),
+              allowBlank: false,
+              width: 600,
+              bind: "{classificationStore}",
+              valueField: "id",
+              displayField: "text",
+            }
+          ]
+      });
+
+        const exportModal = Ext.create('Ext.Window', {
+          title: 'Select an Option',
+          width: 700,
+          layout: 'fit',
+          modal: true, // Make the window modal
+          items: [
+            exportForm
+          ],
+          buttons: [
+              {
+                  text: 'Export',
+                  handler: function () {
+                    const exportFormValues = exportForm.getValues();
+
+                    const url = Routing.generate('pimcore_bundle_portalclassificationstore_export', {
+                      classificationstoreId: exportFormValues.classificationStore
+                    });
+                    
+                    window.open(url, '_blank');
+                  }
+              },
+              {
+                  text: 'Cancel',
+                  handler: function() {
+                    exportModal.close(); // Close the popup without doing anything
+                  }
+              }
+          ]
+        });
+
+        exportModal.show();
+      },
       iconCls: "pimcore_icon_add",
     };
   },
-
-  onExport: function () {},
 });
+
+

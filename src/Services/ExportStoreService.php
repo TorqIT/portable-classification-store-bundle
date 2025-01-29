@@ -9,10 +9,10 @@ use Pimcore\Model\DataObject\Classificationstore\StoreConfig;
 
 class ExportStoreService
 {
-    public function generateStoreData(string $storeName): array
+    public function generateStoreData(int $storeId): array
     {
-        if (!$store = StoreConfig::getByName($storeName)) {
-            throw new Exception("Classification Store with name $storeName not found");
+        if (!$store = StoreConfig::getById($storeId)) {
+            throw new Exception("Classification store id: $storeId not found.");
         }
 
         $keys = (new KeyConfig\Listing())

@@ -10,11 +10,11 @@ use TorqIT\TorqITPortableClassificationStoreBundle\Services\ExportStoreService;
 #[Route("/export")]
 class ExportController extends AdminAbstractController
 {
-    #[Route("/", name: "pimcore_bundle_portalclassificationstore_export", methods: ["GET"])]
-    public function getExportAction(ExportStoreService $exportStoreService): Response
+    #[Route("/{classificationstoreId}", name: "pimcore_bundle_portalclassificationstore_export", methods: ["GET"])]
+    public function getExportAction(int $classificationstoreId, ExportStoreService $exportStoreService): Response
     {
         $exportData = json_encode(
-            $exportStoreService->generateStoreData('asdf'),
+            $exportStoreService->generateStoreData($classificationstoreId),
             JSON_PRETTY_PRINT
         );
 
