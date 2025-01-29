@@ -6,8 +6,8 @@ Ext.define("pimcore.plugin.TorqITPortableClassificationStoreBundle", {
     pimcore.object.classificationstore.storeTree.prototype.getTabPanel,
   parentGetStore:
     pimcore.object.classificationstore.storeTree.prototype.getStoreTree,
-  importRoute: "/admin/portable-classification-store/import",
-  exportRoute: "/admin/portable-classification-store/export",
+  importRoute: Routing.generate('pimcore_bundle_portalclassificationstore_upload'),
+  exportRoute: Routing.generate('pimcore_bundle_portalclassificationstore_export'),
   initialize: function () {
     const tabPanel = this.parentGetTabPanel();
     console.log("asdf");
