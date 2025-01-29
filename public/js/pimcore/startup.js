@@ -4,8 +4,12 @@ Ext.define("pimcore.plugin.TorqITPortableClassificationStoreBundle", {
   override: "pimcore.object.classificationstore.storeTree",
   parentGetTabPanel:
     pimcore.object.classificationstore.storeTree.prototype.getTabPanel,
+  parentGetStore:
+    pimcore.object.classificationstore.storeTree.prototype.getStoreTree,
+  importRoute: "/admin/portable-classification-store/import",
+  exportRoute: "/admin/portable-classification-store/export",
   initialize: function () {
-    const tabPanel = this.parentGetTabPanel.apply(this);
+    const tabPanel = this.parentGetTabPanel();
 
     tabPanel.addDocked(
       [
@@ -33,13 +37,11 @@ Ext.define("pimcore.plugin.TorqITPortableClassificationStoreBundle", {
             response = response.response;
             const data = Ext.decode(response.responseText);
 
-            if (data) {
-              const editPanel = new pimcore.plugin.datahub.adapter[data.type](
-                this
-              );
-              editPanel.openConfiguration(data.name);
+            if (data && data.success) {
+              this.parentGetStore().reload();
+            } else {
+              alert(data.message);
             }
-            this.refreshTree();
           }.bind(this),
           function (response) {
             response = response.response;
