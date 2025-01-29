@@ -1,12 +1,5 @@
 pimcore.registerNS("pimcore.plugin.TorqITPortableClassificationStoreBundle");
 
-function exportClassificationStore (exportForm) {
-  console.log(123);
-  if (!exportForm.isValid()) {
-    return;
-  }
-}
-
 function getJsonStoreForClassificationStores() {
   return new Ext.data.JsonStore({
     autoLoad: true,
@@ -15,7 +8,6 @@ function getJsonStoreForClassificationStores() {
     proxy: {
       type: "ajax",
       url: "/admin/classificationstore/storetree",
-      extraParams: { classId: this.classId },
     },
     fields: ["id", "text"],
   });
@@ -27,7 +19,6 @@ Ext.define("pimcore.plugin.TorqITPortableClassificationStoreBundle", {
   parentGetStore: pimcore.object.classificationstore.storeTree.prototype.getStoreTree,
   initialize: function () {
     const tabPanel = this.parentGetTabPanel();
-    console.log("asdf");
     tabPanel.addDocked(
       [
         {
