@@ -10,13 +10,17 @@ Ext.define("pimcore.plugin.TorqITPortableClassificationStoreBundle", {
   exportRoute: "/admin/portable-classification-store/export",
   initialize: function () {
     const tabPanel = this.parentGetTabPanel();
-
+    console.log("asdf");
     tabPanel.addDocked(
       [
-        { xtype: "tbfill" },
-        this.getImportButton(),
-        { xtype: "tbfill" },
-        this.getExportButton(),
+        {
+          xtype: 'toolbar',
+          dock: 'right',
+          items: [
+            this.getImportButton(),
+            this.getExportButton(),
+          ]
+      }
       ],
       1
     );
