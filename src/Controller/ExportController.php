@@ -1,0 +1,22 @@
+<?php
+
+namespace TorqIT\TorqITPortableClassificationStoreBundle\Controller;
+
+use Pimcore\Bundle\AdminBundle\Controller\AdminAbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+#[Route("/export")]
+class ExportController extends AdminAbstractController
+{
+    #[Route("/", name: "pimcore_bundle_portalclassificationstore_export", methods: ["GET"])]
+    public function getExportAction(Request $request): Response
+    {
+        return $this->json(
+            [
+                "success" => true
+            ]
+        );
+    }
+}
