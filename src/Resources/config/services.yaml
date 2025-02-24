@@ -12,11 +12,19 @@ services:
     # controllers are imported separately to make sure they're public
     # and have a tag that allows actions to type-hint services
 
-    TorqIT\TorqITPortableClassificationStoreBundle\Command\:
-        resource: '../src/Command'
+    TorqIT\TorqITPortableClassificationStoreBundle\Controller\:
+        resource: "../../Controller"
         public: true
-        tags: ['controller.service_arguments']
+        tags: ["controller.service_arguments"]
 
+    TorqIT\TorqITPortableClassificationStoreBundle\Command\:
+        resource: "../../Command"
+        public: true
+        tags: ["console.command"]
+
+    TorqIT\TorqITPortableClassificationStoreBundle\Services\:
+        resource: "../../Services/*"
+        public: true
 # add more services, or override services that need manual wiring
 #    TorqIT\PortableClassificationStoreBundle\ExampleClass:
 #        arguments:
