@@ -1,19 +1,19 @@
 {
-    "name": "torqit/portable-classification-store-bundle",
-    "type": "pimcore-bundle",
-    "require": {
-        "pimcore/pimcore": "^12.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "TorqIT\\TorqITPortableClassificationStoreBundle\\": "src"
-        }
-    },
-    "extra": {
-        "pimcore": {
-            "bundles": [
-                "TorqIT\\TorqITPortableClassificationStoreBundle\\TorqITPortableClassificationStoreBundle"
-            ]
-        }
+  "name": "torqit/portable-classification-store-bundle",
+  "type": "pimcore-bundle",
+  "require": {
+    "pimcore/pimcore": "^11.0 || ^12.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "TorqIT\\TorqITPortableClassificationStoreBundle\\": "src"
     }
+  },
+  "extra": {
+    "pimcore": {
+      "bundles": [
+        "TorqIT\\TorqITPortableClassificationStoreBundle\\TorqITPortableClassificationStoreBundle"
+      ]
+    }
+  }
 }
