@@ -21,11 +21,11 @@ class ExportController extends AdminAbstractController
         $exportData = $exportStoreService->generateStoreData($classificationstoreId);
 
         // Set headers to force download
-        header('Content-Type: application/json');
+        header('Content-Type: application/sql');
         header('Content-Disposition: attachment; filename="' . $storeName . '.sql"');
         header('Content-Length: ' . strlen($exportData));
 
-        // Output the JSON data as a file
+        // Output the SQL data as a file
         echo $exportData;
         exit;
     }
