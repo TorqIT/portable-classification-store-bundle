@@ -36,7 +36,7 @@ class ImportClassificationStoreCommand extends AbstractCommand
             );
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $name = $input->getArgument(self::STORE_NAME);
 
