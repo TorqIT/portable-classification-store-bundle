@@ -1,4 +1,5 @@
 {
+    "license": "POCL",
   "name": "torqit/portable-classification-store-bundle",
   "type": "pimcore-bundle",
   "require": {
