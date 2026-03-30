@@ -34,7 +34,7 @@ class ExportClassificationStoreCommand extends AbstractCommand
             ->addArgument(self::STORE_NAME, InputArgument::REQUIRED);
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $data = $this->exportStoreService->generateStoreData($input->getArgument(self::STORE_NAME));
